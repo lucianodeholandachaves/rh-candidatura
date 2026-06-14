@@ -439,33 +439,38 @@ elif etapa == 2:
 
           mr = new MediaRecorder(stream);
           mr.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+          function baixarVideo(u) {
+            const a = document.createElement('a');
+            a.href = u;
+            a.download = 'meu-video.webm';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+
           mr.onstop = () => {
             const blob = new Blob(chunks, {type:'video/webm'});
             const url  = URL.createObjectURL(blob);
-            // mostra player de revisão
-            resultEl.innerHTML = `
-              <p style="color:#15803d;font-weight:600">✅ Gravação concluída! Revise abaixo:</p>
-              <video src="${url}" controls style="width:100%;border-radius:10px;max-height:280px"></video>
-              <br>
-              <button onclick="baixarVideo('${url}')"
-                style="display:inline-block;margin-top:12px;background:#16a34a;color:white;
-                       padding:10px 24px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:600">
-                ⬇ Baixar vídeo gravado
-              </button>
-              <script>
-              function baixarVideo(url){{
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'meu-video.webm';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-              }}
-              </script>
-              <p style="color:#64748b;font-size:13px;margin-top:8px">
-                📌 Após baixar, vá para a aba <strong>"Enviar arquivo de vídeo"</strong> e envie o arquivo baixado.
-              </p>
-            `;
+            const p = document.createElement('p');
+            p.style.color = '#15803d';
+            p.style.fontWeight = '600';
+            p.textContent = '✅ Gravação concluída! Revise abaixo:';
+            const vid = document.createElement('video');
+            vid.src = url;
+            vid.controls = true;
+            vid.style = 'width:100%;border-radius:10px;max-height:280px';
+            const btn = document.createElement('button');
+            btn.textContent = '⬇ Baixar vídeo gravado';
+            btn.style = 'margin-top:12px;background:#16a34a;color:white;padding:10px 24px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:600';
+            btn.onclick = () => baixarVideo(url);
+            const info = document.createElement('p');
+            info.style = 'color:#64748b;font-size:13px;margin-top:8px';
+            info.innerHTML = '📌 Após baixar, vá para a aba <strong>"Enviar arquivo de vídeo"</strong> e envie o arquivo baixado.';
+            resultEl.innerHTML = '';
+            resultEl.appendChild(p);
+            resultEl.appendChild(vid);
+            resultEl.appendChild(btn);
+            resultEl.appendChild(info);
             clearInterval(timerInt);
             timerEl.textContent = '';
             preview.srcObject = null;
