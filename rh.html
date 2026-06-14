@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Painel RH</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1e293b; }
+
+/* LOGIN */
+#loginScreen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  position: relative; overflow: hidden;
+}
+#loginScreen::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(120,80,255,.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,200,255,.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(255,60,180,.15) 0%, transparent 50%);
+  animation: pulseGlow 6s ease-in-out infinite alternate;
+}
+@keyframes pulseGlow {
+  from { opacity: .7; transform: scale(1); }
+  to   { opacity: 1;  transform: scale(1.05); }
+}
+#loginScreen::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove {
+  from { background-position: 0 0; }
+  to   { background-position: 40px 40px; }
+}
+.login-card {
+  position: relative; z-index: 10;
+  background: rgba(255,255,255,.07);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 24px; padding: 3rem 2.5rem;
+  box-shadow: 0 32px 80px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+  width: 100%; max-width: 400px; text-align: center;
+  animation: cardIn .6s cubic-bezier(.22,1,.36,1);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(30px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-card .logo {
+  width: 64px; height: 64px; border-radius: 18px; margin: 0 auto 1.2rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 8px 32px rgba(99,102,241,.5);
+}
+.login-card h1 {
+  color: white; font-size: 1.7rem; font-weight: 700;
+  margin-bottom: .3rem; letter-spacing: -.5px;
+}
+.login-card p { color: rgba(255,255,255,.5); font-size: .9rem; margin-bottom: 2rem; }
+.login-card .form-group label { color: rgba(255,255,255,.7); }
+.login-card .form-group input {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  color: white; border-radius: 12px;
+  transition: border .2s, background .2s;
+}
+.login-card .form-group input::placeholder { color: rgba(255,255,255,.3); }
+.login-card .form-group input:focus {
+  border-color: #6366f1;
+  background: rgba(99,102,241,.15);
+  box-shadow: 0 0 0 3px rgba(99,102,241,.2);
+  outline: none;
+}
+.login-card .btn-login {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white; border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 8px 24px rgba(99,102,241,.4);
+  transition: transform .2s, box-shadow .2s;
+  margin-top: .5rem;
+}
+.login-card .btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(99,102,241,.5);
+}
+
+/* HEADER */
+header {
+  background: #1e3a5f; color: white;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2rem; position: sticky; top: 0; z-index: 100;
+}
+header h1 { font-size: 1.2rem; }
+.header-btns { display: flex; gap: 8px; }
+
+/* TABS */
+.tabs { display: flex; background: white; border-bottom: 2px solid #e2e8f0; padding: 0 2rem; }
+.tab {
+  padding: 1rem 1.5rem; cursor: pointer; font-weight: 600; color: #64748b;
+  border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .2s;
+}
+.tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+
+/* MAIN */
+main { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+
+/* FILTROS */
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.filtros input, .filtros select {
+  padding: 9px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+  font-size: 14px; outline: none; background: white;
+}
+.filtros input { flex: 1; min-width: 200px; }
+.filtros input:focus, .filtros select:focus { border-color: #2563eb; }
+
+/* CARDS CANDIDATOS */
+.candidatos-grid { display: grid; gap: 1rem; }
+.cand-card {
+  background: white; border-radius: 14px; padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06); border: 1.5px solid #f1f5f9;
+  transition: box-shadow .2s;
+}
+.cand-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+.cand-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+.cand-nome { font-size: 1.1rem; font-weight: 700; color: #1e3a5f; }
+.cand-cargo { display: inline-block; background: #eff6ff; color: #2563eb; border-radius: 999px; padding: 3px 12px; font-size: .8rem; font-weight: 600; margin-top: 4px; }
+.cand-info { color: #64748b; font-size: .88rem; margin: .8rem 0; line-height: 1.7; }
+.cand-acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; }
+
+.parecer-area { margin-top: 1rem; }
+.parecer-area textarea {
+  width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px;
+  padding: 10px 14px; font-size: 14px; font-family: inherit; resize: vertical;
+  min-height: 80px; outline: none;
+}
+.parecer-area textarea:focus { border-color: #2563eb; }
+.parecer-salvo { color: #15803d; font-size: .85rem; margin-top: .4rem; font-weight: 600; display: none; }
+
+/* EMPRESAS */
+.empresa-card {
+  background: white; border-radius: 14px; padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06); margin-bottom: 1rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.empresa-info strong { font-size: 1rem; color: #1e3a5f; }
+.empresa-info span { color: #64748b; font-size: .88rem; margin-left: 12px; }
+.empresa-acoes { display: flex; gap: 8px; }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: 16px; padding: 2rem;
+  max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;
+}
+.modal h3 { color: #1e3a5f; margin-bottom: 1.2rem; font-size: 1.2rem; }
+.modal-close { float: right; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #64748b; }
+
+/* FORMULÁRIO */
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: .85rem; font-weight: 600; color: #475569; margin-bottom: .4rem; }
+.form-group input, .form-group select {
+  width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0;
+  border-radius: 10px; font-size: 15px; outline: none;
+}
+.form-group input:focus { border-color: #2563eb; }
+
+/* CHECKBOXES candidatos para empresa */
+.check-list { max-height: 300px; overflow-y: auto; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: .5rem; }
+.check-item { display: flex; align-items: center; gap: 10px; padding: .5rem; border-radius: 8px; cursor: pointer; }
+.check-item:hover { background: #f8fafc; }
+.check-item input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+.check-item label { cursor: pointer; font-size: .9rem; }
+
+/* BOTÕES */
+.btn {
+  padding: 9px 20px; border-radius: 9px; font-size: 14px;
+  font-weight: 600; cursor: pointer; border: none; transition: background .2s;
+}
+.btn-primary { background: #2563eb; color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-green { background: #16a34a; color: white; }
+.btn-green:hover { background: #15803d; }
+.btn-red { background: #dc2626; color: white; }
+.btn-red:hover { background: #b91c1c; }
+.btn-gray { background: #e2e8f0; color: #475569; }
+.btn-gray:hover { background: #cbd5e1; }
+.btn-outline { background: white; color: #2563eb; border: 1.5px solid #2563eb; }
+.btn-outline:hover { background: #eff6ff; }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+
+/* VIDEO MODAL */
+#videoModal video { width: 100%; border-radius: 10px; max-height: 60vh; }
+
+.empty { text-align: center; color: #94a3b8; padding: 3rem; font-size: 1rem; }
+.badge-empresa {
+  display: inline-block; background: #f0fdf4; color: #16a34a;
+  border: 1px solid #bbf7d0; border-radius: 999px; padding: 2px 10px; font-size: .75rem; margin: 2px;
+}
+
+@media(max-width:600px) {
+  header { padding: .8rem 1rem; }
+  .tabs { padding: 0 .5rem; }
+  .tab { padding: .8rem .8rem; font-size: .85rem; }
+  main { padding: 1rem .5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo">🎯</div>
+    <h1>Painel RH</h1>
+    <p>Acesso restrito à equipe de RH</p>
+    <div class="form-group" style="text-align:left">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" placeholder="rh@empresa.com"/>
+    </div>
+    <div class="form-group" style="text-align:left">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')fazerLogin()"/>
+    </div>
+    <div id="loginErro" style="color:#f87171;font-size:.85rem;margin-bottom:.8rem;display:none">Usuário ou senha incorretos.</div>
+    <button class="btn-login" onclick="fazerLogin()">Entrar →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" style="display:none">
+
+  <header>
+    <h1>🎯 Painel RH</h1>
+    <div class="header-btns">
+      <button class="btn btn-gray btn-sm" onclick="logout()">Sair</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" onclick="mudarTab('candidatos', this)">👥 Candidatos</div>
+    <div class="tab" onclick="mudarTab('empresas', this)">🏢 Empresas</div>
+  </div>
+
+  <main>
+
+    <!-- TAB CANDIDATOS -->
+    <div id="tabCandidatos">
+      <div class="filtros">
+        <input type="text" id="buscaNome" placeholder="🔍 Buscar por nome..." oninput="filtrar()"/>
+        <select id="filtroCargo" onchange="filtrar()">
+          <option value="">Todos os cargos</option>
+        </select>
+        <select id="filtroEmpresa" onchange="filtrar()">
+          <option value="">Todas as empresas</option>
+        </select>
+      </div>
+      <div id="listaCandidatos" class="candidatos-grid"></div>
+    </div>
+
+    <!-- TAB EMPRESAS -->
+    <div id="tabEmpresas" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+        <button class="btn btn-primary" onclick="abrirModalEmpresa()">+ Nova Empresa</button>
+      </div>
+      <div id="listaEmpresas"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL VÍDEO -->
+<div class="modal-overlay" id="videoModal">
+  <div class="modal" style="max-width:700px">
+    <button class="modal-close" onclick="fecharModal('videoModal')">✕</button>
+    <h3 id="videoModalNome">Vídeo do Candidato</h3>
+    <video id="videoPlayer" controls></video>
+  </div>
+</div>
+
+<!-- MODAL NOVA EMPRESA -->
+<div class="modal-overlay" id="modalEmpresa">
+  <div class="modal">
+    <button class="modal-close" onclick="fecharModal('modalEmpresa')">✕</button>
+    <h3 id="modalEmpresaTitulo">Nova Empresa</h3>
+    <div class="form-group">
+      <label>Nome da empresa *</label>
+      <input type="text" id="empresaNome" placeholder="Ex.: Empresa ABC"/>
+    </div>
+    <div class="form-group">
+      <label>PIN de acesso *</label>
+      <input type="text" id="empresaPin" placeholder="Ex.: 1234" maxlength="10"/>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:1rem">
+      <button class="btn btn-gray" style="flex:1" onclick="fecharModal('modalEmpresa')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:2" onclick="salvarEmpresa()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LIBERAR CANDIDATOS -->
+<div class="modal-overlay" id="modalLiberar">
+  <div class="modal">
+    <button class="modal-close" onclick="fecharModal('modalLiberar')">✕</button>
+    <h3 id="modalLiberarTitulo">Liberar candidatos</h3>
+    <p style="color:#64748b;font-size:.88rem;margin-bottom:1rem">Selecione os candidatos que esta empresa poderá visualizar:</p>
+    <div class="check-list" id="checkCandidatos"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:1rem" onclick="salvarLiberados()">Salvar</button>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://qbtroafavgbvrznggppr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFidHJvYWZhdmdidnJ6bmdncHByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NDUwMTcsImV4cCI6MjA5NzAyMTAxN30.POJQXzgEzlItAyyZY0UskSuPjPdVBQUPck4iHw6h6SA';
+
+// Credenciais RH (simples, sem backend)
+const RH_USER = 'rh@empresa.com';
+const RH_PASS = 'rh2024';
+
+const headers = {
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'apikey': SUPABASE_KEY,
+  'Content-Type': 'application/json'
+};
+
+let todosCandidatos = [], todasEmpresas = [], empresaEditandoId = null, empresaLiberandoId = null;
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────
+function fazerLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  if (u === RH_USER && p === RH_PASS) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    carregarTudo();
+  } else {
+    document.getElementById('loginErro').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+function mudarTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tabCandidatos').style.display = tab === 'candidatos' ? 'block' : 'none';
+  document.getElementById('tabEmpresas').style.display   = tab === 'empresas'   ? 'block' : 'none';
+  if (tab === 'empresas') carregarEmpresas();
+}
+
+// ── API ───────────────────────────────────────────────────────────────────
+async function api(path, method='GET', body=null) {
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, opts);
+  if (!res.ok) throw new Error(await res.text());
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
+
+// ── CARREGAR ──────────────────────────────────────────────────────────────
+async function carregarTudo() {
+  await Promise.all([carregarCandidatos(), carregarEmpresas()]);
+}
+
+async function carregarCandidatos() {
+  const [cands, pareceres, ecs] = await Promise.all([
+    api('candidatos?select=*&order=criado_em.desc'),
+    api('pareceres?select=*'),
+    api('empresa_candidatos?select=*'),
+  ]);
+  todosCandidatos = cands.map(c => ({
+    ...c,
+    parecer: (pareceres.find(p => p.candidato_id === c.id) || {}).parecer || '',
+    parecer_id: (pareceres.find(p => p.candidato_id === c.id) || {}).id || null,
+    empresas_ids: ecs.filter(e => e.candidato_id === c.id).map(e => e.empresa_id),
+  }));
+  popularFiltros();
+  renderCandidatos(todosCandidatos);
+}
+
+async function carregarEmpresas() {
+  todasEmpresas = await api('empresas?select=*&order=criado_em.desc') || [];
+  renderEmpresas();
+  popularFiltroEmpresa();
+}
+
+// ── FILTROS ───────────────────────────────────────────────────────────────
+function popularFiltros() {
+  const cargos = [...new Set(todosCandidatos.map(c => c.cargo))].sort();
+  const sel = document.getElementById('filtroCargo');
+  sel.innerHTML = '<option value="">Todos os cargos</option>';
+  cargos.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+}
+
+function popularFiltroEmpresa() {
+  const sel = document.getElementById('filtroEmpresa');
+  sel.innerHTML = '<option value="">Todas as empresas</option>';
+  todasEmpresas.forEach(e => sel.innerHTML += `<option value="${e.id}">${e.nome}</option>`);
+}
+
+function filtrar() {
+  const busca   = document.getElementById('buscaNome').value.toLowerCase();
+  const cargo   = document.getElementById('filtroCargo').value;
+  const empresa = document.getElementById('filtroEmpresa').value;
+  let lista = todosCandidatos.filter(c => {
+    const okNome   = c.nome.toLowerCase().includes(busca);
+    const okCargo  = !cargo || c.cargo === cargo;
+    const okEmp    = !empresa || c.empresas_ids.includes(empresa);
+    return okNome && okCargo && okEmp;
+  });
+  renderCandidatos(lista);
+}
+
+// ── RENDER CANDIDATOS ─────────────────────────────────────────────────────
+function renderCandidatos(lista) {
+  const el = document.getElementById('listaCandidatos');
+  if (!lista.length) { el.innerHTML = '<div class="empty">Nenhum candidato encontrado.</div>'; return; }
+
+  el.innerHTML = lista.map(c => {
+    const emps = c.empresas_ids.map(id => {
+      const emp = todasEmpresas.find(e => e.id === id);
+      return emp ? `<span class="badge-empresa">${emp.nome}</span>` : '';
+    }).join('');
+
+    return `
+    <div class="cand-card" id="card-${c.id}">
+      <div class="cand-header">
+        <div>
+          <div class="cand-nome">${c.nome}</div>
+          <span class="cand-cargo">${c.cargo}</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-red btn-sm" onclick="excluirCandidato('${c.id}')">🗑 Excluir</button>
+        </div>
+      </div>
+      <div class="cand-info">
+        ✉️ ${c.email} &nbsp;|&nbsp; 📱 ${c.whatsapp}<br>
+        📅 ${new Date(c.criado_em).toLocaleDateString('pt-BR')}
+        ${emps ? '<br>🏢 ' + emps : ''}
+      </div>
+      <div class="cand-acoes">
+        <button class="btn btn-outline btn-sm" onclick="verVideo('${c.video_url}','${c.nome}')">▶ Ver Vídeo</button>
+        <button class="btn btn-gray btn-sm" onclick="window.open('${c.curriculo_url}','_blank')">📄 Currículo</button>
+      </div>
+      <div class="parecer-area">
+        <label style="font-size:.85rem;font-weight:600;color:#475569;display:block;margin-bottom:.4rem;margin-top:.8rem">📝 Parecer do RH</label>
+        <textarea id="parecer-${c.id}" placeholder="Digite o parecer sobre este candidato...">${c.parecer}</textarea>
+        <div style="display:flex;gap:8px;margin-top:.5rem">
+          <button class="btn btn-green btn-sm" onclick="salvarParecer('${c.id}','${c.parecer_id || ''}')">💾 Salvar parecer</button>
+          ${c.parecer ? `<button class="btn btn-red btn-sm" onclick="excluirParecer('${c.id}','${c.parecer_id || ''}')">🗑 Excluir parecer</button>` : ''}
+        </div>
+        <div class="parecer-salvo" id="saved-${c.id}">✅ Parecer salvo!</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── VÍDEO ─────────────────────────────────────────────────────────────────
+function verVideo(url, nome) {
+  document.getElementById('videoPlayer').src = url;
+  document.getElementById('videoModalNome').textContent = '🎥 ' + nome;
+  document.getElementById('videoModal').classList.add('open');
+}
+
+// ── PARECER ───────────────────────────────────────────────────────────────
+async function salvarParecer(candidatoId, parecerId) {
+  const texto = document.getElementById('parecer-' + candidatoId).value.trim();
+  try {
+    if (parecerId) {
+      await api(`pareceres?id=eq.${parecerId}`, 'PATCH', { parecer: texto, atualizado_em: new Date().toISOString() });
+    } else {
+      await api('pareceres', 'POST', { candidato_id: candidatoId, parecer: texto });
+    }
+    const el = document.getElementById('saved-' + candidatoId);
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2000);
+    await carregarCandidatos();
+  } catch(e) { alert('Erro: ' + e.message); }
+}
+
+async function excluirParecer(candidatoId, parecerId) {
+  if (!confirm('Excluir parecer?')) return;
+  await api(`pareceres?id=eq.${parecerId}`, 'DELETE');
+  await carregarCandidatos();
+}
+
+// ── EXCLUIR CANDIDATO ─────────────────────────────────────────────────────
+async function excluirCandidato(id) {
+  if (!confirm('Excluir este candidato permanentemente?')) return;
+  await api(`candidatos?id=eq.${id}`, 'DELETE');
+  await carregarCandidatos();
+}
+
+// ── EMPRESAS ──────────────────────────────────────────────────────────────
+function renderEmpresas() {
+  const el = document.getElementById('listaEmpresas');
+  if (!todasEmpresas.length) { el.innerHTML = '<div class="empty">Nenhuma empresa cadastrada.</div>'; return; }
+  el.innerHTML = todasEmpresas.map(e => `
+    <div class="empresa-card">
+      <div class="empresa-info">
+        <strong>${e.nome}</strong>
+        <span>PIN: ${e.pin}</span>
+      </div>
+      <div class="empresa-acoes">
+        <button class="btn btn-outline btn-sm" onclick="abrirLiberar('${e.id}','${e.nome}')">👥 Candidatos</button>
+        <button class="btn btn-gray btn-sm" onclick="editarEmpresa('${e.id}','${e.nome}','${e.pin}')">✏️ Editar</button>
+        <button class="btn btn-red btn-sm" onclick="excluirEmpresa('${e.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function abrirModalEmpresa() {
+  empresaEditandoId = null;
+  document.getElementById('modalEmpresaTitulo').textContent = 'Nova Empresa';
+  document.getElementById('empresaNome').value = '';
+  document.getElementById('empresaPin').value = '';
+  document.getElementById('modalEmpresa').classList.add('open');
+}
+
+function editarEmpresa(id, nome, pin) {
+  empresaEditandoId = id;
+  document.getElementById('modalEmpresaTitulo').textContent = 'Editar Empresa';
+  document.getElementById('empresaNome').value = nome;
+  document.getElementById('empresaPin').value = pin;
+  document.getElementById('modalEmpresa').classList.add('open');
+}
+
+async function salvarEmpresa() {
+  const nome = document.getElementById('empresaNome').value.trim();
+  const pin  = document.getElementById('empresaPin').value.trim();
+  if (!nome || !pin) { alert('Preencha nome e PIN.'); return; }
+  try {
+    if (empresaEditandoId) {
+      await api(`empresas?id=eq.${empresaEditandoId}`, 'PATCH', { nome, pin });
+    } else {
+      await api('empresas', 'POST', { nome, pin });
+    }
+    fecharModal('modalEmpresa');
+    await carregarEmpresas();
+  } catch(e) { alert('Erro: ' + e.message); }
+}
+
+async function excluirEmpresa(id) {
+  if (!confirm('Excluir esta empresa?')) return;
+  await api(`empresas?id=eq.${id}`, 'DELETE');
+  await carregarEmpresas();
+}
+
+// ── LIBERAR CANDIDATOS ────────────────────────────────────────────────────
+async function abrirLiberar(empresaId, empresaNome) {
+  empresaLiberandoId = empresaId;
+  document.getElementById('modalLiberarTitulo').textContent = '👥 Candidatos — ' + empresaNome;
+  const ecs = await api(`empresa_candidatos?empresa_id=eq.${empresaId}&select=candidato_id`);
+  const liberados = ecs.map(e => e.candidato_id);
+  const lista = document.getElementById('checkCandidatos');
+  lista.innerHTML = todosCandidatos.map(c => `
+    <div class="check-item">
+      <input type="checkbox" id="chk-${c.id}" value="${c.id}" ${liberados.includes(c.id) ? 'checked' : ''}/>
+      <label for="chk-${c.id}"><strong>${c.nome}</strong> — ${c.cargo}</label>
+    </div>
+  `).join('');
+  document.getElementById('modalLiberar').classList.add('open');
+}
+
+async function salvarLiberados() {
+  const checks = document.querySelectorAll('#checkCandidatos input[type=checkbox]');
+  const selecionados = [...checks].filter(c => c.checked).map(c => c.value);
+  try {
+    await api(`empresa_candidatos?empresa_id=eq.${empresaLiberandoId}`, 'DELETE');
+    if (selecionados.length) {
+      await api('empresa_candidatos', 'POST', selecionados.map(cid => ({
+        empresa_id: empresaLiberandoId, candidato_id: cid
+      })));
+    }
+    fecharModal('modalLiberar');
+    await carregarCandidatos();
+  } catch(e) { alert('Erro: ' + e.message); }
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+function fecharModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'videoModal') document.getElementById('videoPlayer').src = '';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) fecharModal(m.id); });
+});
+</script>
+</body>
+</html>
