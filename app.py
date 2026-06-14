@@ -477,7 +477,7 @@ elif etapa == 2:
             elapsed++;
             const m = String(Math.floor(elapsed/60)).padStart(2,'0');
             const s = String(elapsed%60).padStart(2,'0');
-            timerEl.textContent = `⏱ ${m}:${s} / 02:00`;
+            timerEl.textContent = '⏱ ' + m + ':' + s + ' / 02:00';
             if(elapsed >= MAX) btnStop.click();
           }, 1000);
         };
