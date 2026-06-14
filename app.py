@@ -462,7 +462,7 @@ elif etapa == 2:
             const btn = document.createElement('button');
             btn.textContent = '⬇ Baixar vídeo gravado';
             btn.style = 'margin-top:12px;background:#16a34a;color:white;padding:10px 24px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:600';
-            btn.onclick = () => baixarVideo(url);
+            btn.onclick = () => window.open(url, '_top');
             const info = document.createElement('p');
             info.style = 'color:#64748b;font-size:13px;margin-top:8px';
             info.innerHTML = '📌 Após baixar, vá para a aba <strong>"Enviar arquivo de vídeo"</strong> e envie o arquivo baixado.';
@@ -504,7 +504,7 @@ elif etapa == 2:
         };
         </script>
         """
-        st.components.v1.html(components_html, height=520, scrolling=False)
+        st.components.v1.html(components_html, height=700, scrolling=True)
 
         st.markdown("""
         <div class='info-box' style='margin-top:1rem'>
