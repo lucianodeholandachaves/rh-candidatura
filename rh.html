@@ -139,11 +139,17 @@ main { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
 
 .parecer-area { margin-top: 1rem; }
 .parecer-area textarea {
-  width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px;
-  padding: 10px 14px; font-size: 14px; font-family: inherit; resize: vertical;
-  min-height: 80px; outline: none;
+  width: 100%; border: 1.5px solid #e2e8f0; border-radius: 12px;
+  padding: 14px 16px; font-size: 14px; font-family: inherit; resize: vertical;
+  min-height: 140px; outline: none; line-height: 1.7;
+  background: linear-gradient(135deg, #f8fafc, #f0f9ff);
+  transition: border .2s, box-shadow .2s;
 }
-.parecer-area textarea:focus { border-color: #2563eb; }
+.parecer-area textarea:focus {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
 .parecer-salvo { color: #15803d; font-size: .85rem; margin-top: .4rem; font-weight: 600; display: none; }
 
 /* EMPRESAS */
@@ -461,6 +467,7 @@ function renderCandidatos(lista) {
       <div class="cand-acoes">
         <button class="btn btn-outline btn-sm" onclick="verVideo('${c.video_url}','${c.nome}')">▶ Ver Vídeo</button>
         <button class="btn btn-gray btn-sm" onclick="window.open('${c.curriculo_url}','_blank')">📄 Currículo</button>
+        <button class="btn btn-sm" style="background:#7c3aed;color:white" onclick="exportarPDF('${c.id}')">📥 Exportar PDF</button>
       </div>
       <div class="parecer-area">
         <label style="font-size:.85rem;font-weight:600;color:#475569;display:block;margin-bottom:.4rem;margin-top:.8rem">📝 Parecer do RH</label>
@@ -604,9 +611,82 @@ function fecharModal(id) {
   if (id === 'videoModal') document.getElementById('videoPlayer').src = '';
 }
 
+async function exportarPDF(id) {
+  const c = todosCandidatos.find(x => x.id === id);
+  if (!c) return;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, pad = 20;
+  let y = 20;
+
+  doc.setFillColor(15, 32, 39);
+  doc.roundedRect(pad, y, W-pad*2, 36, 4, 4, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(18); doc.setFont('helvetica','bold');
+  doc.text(c.nome, pad+8, y+14);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.setTextColor(125,211,252);
+  doc.text(c.cargo, pad+8, y+24);
+  doc.setTextColor(255,255,255);
+  doc.text('gestorRH', W-pad-8, y+14, { align: 'right' });
+  y += 46;
+
+  doc.setFillColor(248,250,252);
+  doc.roundedRect(pad, y, W-pad*2, 42, 3, 3, 'F');
+  doc.setDrawColor(226,232,240);
+  doc.roundedRect(pad, y, W-pad*2, 42, 3, 3, 'S');
+  doc.setFontSize(7); doc.setFont('helvetica','bold');
+  doc.setTextColor(148,163,184);
+  doc.text('DADOS DE CONTATO', pad+8, y+8);
+  doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.setTextColor(100,116,139);
+  doc.text('E-mail:', pad+8, y+18);
+  doc.text('WhatsApp:', pad+8, y+27);
+  doc.text('Candidatura:', pad+8, y+36);
+  doc.setTextColor(30,41,59); doc.setFont('helvetica','bold');
+  doc.text(c.email, pad+35, y+18);
+  doc.text(c.whatsapp, pad+35, y+27);
+  doc.text(new Date(c.criado_em).toLocaleDateString('pt-BR'), pad+35, y+36);
+  y += 52;
+
+  if (c.parecer) {
+    doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.setTextColor(2,132,199);
+    doc.text('PARECER DO RH', pad, y);
+    y += 8;
+    doc.setFontSize(10); doc.setFont('helvetica','normal');
+    doc.setTextColor(30,58,95);
+    const maxWidth = W - pad*2;
+    const lineH = 7;
+    const paragrafos = c.parecer.split('\n');
+    paragrafos.forEach(paragrafo => {
+      const lines = doc.splitTextToSize(paragrafo || ' ', maxWidth);
+      lines.forEach(line => {
+        if (y > 272) { doc.addPage(); y = 20; }
+        doc.text(line, pad, y);
+        y += lineH;
+      });
+      y += 3;
+    });
+  }
+
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(226,232,240);
+    doc.line(pad, 287, W-pad, 287);
+    doc.setFontSize(8); doc.setTextColor(148,163,184);
+    doc.text(`gestorRH — Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}  |  Página ${i} de ${totalPages}`, W/2, 292, { align: 'center' });
+  }
+
+  doc.save(`candidato-${c.nome.replace(/\s+/g,'-')}.pdf`);
+}
+
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) fecharModal(m.id); });
 });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
