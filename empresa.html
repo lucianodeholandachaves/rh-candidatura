@@ -379,13 +379,12 @@ async function exportarPDF(id) {
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
   const W = 210, pad = 20;
   let y = 20;
 
   // Header
   doc.setFillColor(15, 32, 39);
-  doc.roundedRect(pad, y, W - pad*2, 36, 4, 4, 'F');
+  doc.roundedRect(pad, y, W-pad*2, 36, 4, 4, 'F');
   doc.setTextColor(255,255,255);
   doc.setFontSize(18); doc.setFont('helvetica','bold');
   doc.text(c.nome, pad+8, y+14);
@@ -415,31 +414,37 @@ async function exportarPDF(id) {
   doc.text(new Date(c.criado_em).toLocaleDateString('pt-BR'), pad+35, y+36);
   y += 52;
 
-  // Parecer
+  // Parecer com quebra de página automática
   if (c.parecer) {
     doc.setFontSize(7); doc.setFont('helvetica','bold');
     doc.setTextColor(2,132,199);
-    doc.text('PARECER DO RH', pad, y+8);
-    y += 14;
+    doc.text('PARECER DO RH', pad, y);
+    y += 8;
     doc.setFontSize(10); doc.setFont('helvetica','normal');
     doc.setTextColor(30,58,95);
-    const lines = doc.splitTextToSize(c.parecer, W-pad*2);
-    const lineH = 6;
-    lines.forEach(line => {
-      if (y > 270) {
-        doc.addPage();
-        y = 20;
-      }
-      doc.text(line, pad, y);
-      y += lineH;
+    const maxWidth = W - pad*2;
+    const lineH = 7;
+    const paragrafos = c.parecer.split('\n');
+    paragrafos.forEach(paragrafo => {
+      const lines = doc.splitTextToSize(paragrafo || ' ', maxWidth);
+      lines.forEach(line => {
+        if (y > 272) { doc.addPage(); y = 20; }
+        doc.text(line, pad, y);
+        y += lineH;
+      });
+      y += 3;
     });
   }
 
-  // Footer
-  doc.setDrawColor(226,232,240);
-  doc.line(pad, 280, W-pad, 280);
-  doc.setFontSize(8); doc.setTextColor(148,163,184);
-  doc.text(`gestorRH — Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, W/2, 285, { align: 'center' });
+  // Footer em todas as páginas
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(226,232,240);
+    doc.line(pad, 287, W-pad, 287);
+    doc.setFontSize(8); doc.setTextColor(148,163,184);
+    doc.text(`gestorRH — Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}  |  Página ${i} de ${totalPages}`, W/2, 292, { align: 'center' });
+  }
 
   doc.save(`candidato-${c.nome.replace(/\s+/g,'-')}.pdf`);
 }
