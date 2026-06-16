@@ -417,20 +417,22 @@ async function exportarPDF(id) {
 
   // Parecer
   if (c.parecer) {
-    doc.setFillColor(240,249,255);
-    doc.setDrawColor(186,230,253);
-    const lines = doc.splitTextToSize(c.parecer, W-pad*2-20);
-    const boxH = lines.length * 6 + 20;
-    doc.roundedRect(pad, y, W-pad*2, boxH, 3, 3, 'FD');
-    doc.setFillColor(14,165,233);
-    doc.rect(pad, y, 4, boxH, 'F');
     doc.setFontSize(7); doc.setFont('helvetica','bold');
     doc.setTextColor(2,132,199);
-    doc.text('PARECER DO RH', pad+10, y+8);
+    doc.text('PARECER DO RH', pad, y+8);
+    y += 14;
     doc.setFontSize(10); doc.setFont('helvetica','normal');
     doc.setTextColor(30,58,95);
-    doc.text(lines, pad+10, y+16);
-    y += boxH + 10;
+    const lines = doc.splitTextToSize(c.parecer, W-pad*2);
+    const lineH = 6;
+    lines.forEach(line => {
+      if (y > 270) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, pad, y);
+      y += lineH;
+    });
   }
 
   // Footer
