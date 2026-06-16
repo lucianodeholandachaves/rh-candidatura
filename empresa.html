@@ -377,49 +377,69 @@ async function exportarPDF(id) {
   const c = todosCandidatos.find(x => x.id === id);
   if (!c) return;
 
-  const html = `
-    <html><head><meta charset="UTF-8">
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Inter', sans-serif; background: white; color: #1e293b; padding: 40px; }
-      .header { background: linear-gradient(135deg, #0f2027, #2c5364); color: white; border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; }
-      .header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
-      .header .cargo { background: rgba(255,255,255,.2); border-radius: 999px; padding: 4px 14px; font-size: .8rem; font-weight: 600; display: inline-block; margin-top: 8px; }
-      .section { background: #f8fafc; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
-      .section h2 { font-size: .75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-      .info-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: .92rem; }
-      .info-row span { color: #64748b; min-width: 80px; }
-      .info-row strong { color: #1e293b; }
-      .parecer { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 1px solid #bae6fd; border-left: 4px solid #0ea5e9; border-radius: 12px; padding: 16px 20px; white-space: pre-wrap; line-height: 1.8; font-size: .92rem; color: #1e3a5f; }
-      .footer { text-align: center; color: #94a3b8; font-size: .78rem; margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
-      .logo { font-weight: 800; color: #0ea5e9; font-size: 1rem; }
-    </style></head><body>
-    <div class="header">
-      <h1>${c.nome}</h1>
-      <div class="cargo">${c.cargo}</div>
-    </div>
-    <div class="section">
-      <h2>📋 Dados de Contato</h2>
-      <div class="info-row"><span>✉️ E-mail</span><strong>${c.email}</strong></div>
-      <div class="info-row"><span>📱 WhatsApp</span><strong>${c.whatsapp}</strong></div>
-      <div class="info-row"><span>📅 Data</span><strong>${new Date(c.criado_em).toLocaleDateString('pt-BR')}</strong></div>
-    </div>
-    ${c.parecer ? `
-    <div class="section">
-      <h2>📝 Parecer do RH</h2>
-      <div class="parecer">${c.parecer}</div>
-    </div>` : ''}
-    <div class="footer">
-      <span class="logo">gestorRH</span> — Relatório gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
-    </div>
-    </body></html>
-  `;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-  const w = window.open('', '_blank');
-  w.document.write(html);
-  w.document.close();
-  w.onload = () => { w.print(); };
+  const W = 210, pad = 20;
+  let y = 20;
+
+  // Header
+  doc.setFillColor(15, 32, 39);
+  doc.roundedRect(pad, y, W - pad*2, 36, 4, 4, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(18); doc.setFont('helvetica','bold');
+  doc.text(c.nome, pad+8, y+14);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.setTextColor(125,211,252);
+  doc.text(c.cargo, pad+8, y+24);
+  doc.setTextColor(255,255,255);
+  doc.text('gestorRH', W-pad-8, y+14, { align: 'right' });
+  y += 46;
+
+  // Dados
+  doc.setFillColor(248,250,252);
+  doc.roundedRect(pad, y, W-pad*2, 42, 3, 3, 'F');
+  doc.setDrawColor(226,232,240);
+  doc.roundedRect(pad, y, W-pad*2, 42, 3, 3, 'S');
+  doc.setFontSize(7); doc.setFont('helvetica','bold');
+  doc.setTextColor(148,163,184);
+  doc.text('DADOS DE CONTATO', pad+8, y+8);
+  doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.setTextColor(100,116,139);
+  doc.text('E-mail:', pad+8, y+18);
+  doc.text('WhatsApp:', pad+8, y+27);
+  doc.text('Candidatura:', pad+8, y+36);
+  doc.setTextColor(30,41,59); doc.setFont('helvetica','bold');
+  doc.text(c.email, pad+35, y+18);
+  doc.text(c.whatsapp, pad+35, y+27);
+  doc.text(new Date(c.criado_em).toLocaleDateString('pt-BR'), pad+35, y+36);
+  y += 52;
+
+  // Parecer
+  if (c.parecer) {
+    doc.setFillColor(240,249,255);
+    doc.setDrawColor(186,230,253);
+    const lines = doc.splitTextToSize(c.parecer, W-pad*2-20);
+    const boxH = lines.length * 6 + 20;
+    doc.roundedRect(pad, y, W-pad*2, boxH, 3, 3, 'FD');
+    doc.setFillColor(14,165,233);
+    doc.rect(pad, y, 4, boxH, 'F');
+    doc.setFontSize(7); doc.setFont('helvetica','bold');
+    doc.setTextColor(2,132,199);
+    doc.text('PARECER DO RH', pad+10, y+8);
+    doc.setFontSize(10); doc.setFont('helvetica','normal');
+    doc.setTextColor(30,58,95);
+    doc.text(lines, pad+10, y+16);
+    y += boxH + 10;
+  }
+
+  // Footer
+  doc.setDrawColor(226,232,240);
+  doc.line(pad, 280, W-pad, 280);
+  doc.setFontSize(8); doc.setTextColor(148,163,184);
+  doc.text(`gestorRH — Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, W/2, 285, { align: 'center' });
+
+  doc.save(`candidato-${c.nome.replace(/\s+/g,'-')}.pdf`);
 }
 
 // Foco automático no primeiro campo do PIN
@@ -452,5 +472,6 @@ function drawStars() {
 resizeCanvas(); createStars(); drawStars();
 window.addEventListener('resize', () => { resizeCanvas(); createStars(); });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
