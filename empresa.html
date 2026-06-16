@@ -346,6 +346,7 @@ function renderCandidatos(lista) {
       <div class="cand-acoes">
         <button class="btn btn-outline btn-sm" onclick="verVideo('${c.video_url}','${c.nome}')">▶ Ver Vídeo</button>
         <button class="btn btn-gray btn-sm" onclick="window.open('${c.curriculo_url}','_blank')">📄 Currículo</button>
+        <button class="btn btn-sm" style="background:#7c3aed;color:white" onclick="exportarPDF('${c.id}')">📥 Exportar PDF</button>
       </div>
       ${c.parecer ? `
       <div class="parecer-box">
@@ -371,6 +372,55 @@ function fecharModal(id) {
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) fecharModal(m.id); });
 });
+
+async function exportarPDF(id) {
+  const c = todosCandidatos.find(x => x.id === id);
+  if (!c) return;
+
+  const html = `
+    <html><head><meta charset="UTF-8">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Inter', sans-serif; background: white; color: #1e293b; padding: 40px; }
+      .header { background: linear-gradient(135deg, #0f2027, #2c5364); color: white; border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; }
+      .header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
+      .header .cargo { background: rgba(255,255,255,.2); border-radius: 999px; padding: 4px 14px; font-size: .8rem; font-weight: 600; display: inline-block; margin-top: 8px; }
+      .section { background: #f8fafc; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
+      .section h2 { font-size: .75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+      .info-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: .92rem; }
+      .info-row span { color: #64748b; min-width: 80px; }
+      .info-row strong { color: #1e293b; }
+      .parecer { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 1px solid #bae6fd; border-left: 4px solid #0ea5e9; border-radius: 12px; padding: 16px 20px; white-space: pre-wrap; line-height: 1.8; font-size: .92rem; color: #1e3a5f; }
+      .footer { text-align: center; color: #94a3b8; font-size: .78rem; margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
+      .logo { font-weight: 800; color: #0ea5e9; font-size: 1rem; }
+    </style></head><body>
+    <div class="header">
+      <h1>${c.nome}</h1>
+      <div class="cargo">${c.cargo}</div>
+    </div>
+    <div class="section">
+      <h2>📋 Dados de Contato</h2>
+      <div class="info-row"><span>✉️ E-mail</span><strong>${c.email}</strong></div>
+      <div class="info-row"><span>📱 WhatsApp</span><strong>${c.whatsapp}</strong></div>
+      <div class="info-row"><span>📅 Data</span><strong>${new Date(c.criado_em).toLocaleDateString('pt-BR')}</strong></div>
+    </div>
+    ${c.parecer ? `
+    <div class="section">
+      <h2>📝 Parecer do RH</h2>
+      <div class="parecer">${c.parecer}</div>
+    </div>` : ''}
+    <div class="footer">
+      <span class="logo">gestorRH</span> — Relatório gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+    </div>
+    </body></html>
+  `;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => { w.print(); };
+}
 
 // Foco automático no primeiro campo do PIN
 window.onload = () => document.getElementById('p1').focus();
