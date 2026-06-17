@@ -242,159 +242,31 @@
       <div class="error" id="erroWA">WhatsApp inválido.</div>
 
       <label>Vaga / Cargo pretendido *</label>
-      <select id="cargo" onchange="toggleOutro()">
-        <optgroup label="Administração & Gestão">
-          <option>Assistente Administrativo</option>
-          <option>Auxiliar Administrativo</option>
-          <option>Recepcionista</option>
-          <option>Secretário(a) Executivo(a)</option>
-          <option>Gerente Administrativo</option>
-          <option>Diretor(a) Administrativo</option>
-          <option>Analista Administrativo</option>
-        </optgroup>
-        <optgroup label="RH & Pessoas">
-          <option>Analista de RH</option>
-          <option>Assistente de RH</option>
-          <option>Recrutador(a)</option>
-          <option>Especialista em Treinamento e Desenvolvimento</option>
-          <option>Gerente de RH</option>
-          <option>Diretor(a) de RH</option>
-          <option>Analista de Departamento Pessoal</option>
-        </optgroup>
-        <optgroup label="Financeiro & Contabilidade">
-          <option>Analista Financeiro</option>
-          <option>Assistente Financeiro</option>
-          <option>Contador(a)</option>
-          <option>Auxiliar de Contabilidade</option>
-          <option>Gerente Financeiro</option>
-          <option>Diretor(a) Financeiro</option>
-          <option>Tesoureiro(a)</option>
-          <option>Analista de Custos</option>
-          <option>Auditor(a) Interno</option>
-        </optgroup>
-        <optgroup label="TI & Tecnologia">
-          <option>Analista de TI</option>
-          <option>Desenvolvedor(a) de Software</option>
-          <option>Desenvolvedor(a) Front-end</option>
-          <option>Desenvolvedor(a) Back-end</option>
-          <option>Desenvolvedor(a) Full Stack</option>
-          <option>Desenvolvedor(a) Mobile</option>
-          <option>Engenheiro(a) de Software</option>
-          <option>Analista de Sistemas</option>
-          <option>DevOps Engineer</option>
-          <option>Analista de Suporte Técnico</option>
-          <option>Técnico(a) de TI</option>
-          <option>Administrador(a) de Redes</option>
-          <option>Analista de Segurança da Informação</option>
-          <option>Analista de Dados</option>
-          <option>Cientista de Dados</option>
-          <option>Engenheiro(a) de Dados</option>
-          <option>UX/UI Designer</option>
-          <option>Product Manager</option>
-          <option>Scrum Master</option>
-        </optgroup>
-        <optgroup label="Comercial & Vendas">
-          <option>Representante de Vendas</option>
-          <option>Consultor(a) de Vendas</option>
-          <option>Gerente Comercial</option>
-          <option>Diretor(a) Comercial</option>
-          <option>Supervisor(a) de Vendas</option>
-          <option>Executivo(a) de Contas</option>
-          <option>Assistente Comercial</option>
-          <option>Operador(a) de Televendas</option>
-          <option>Promotor(a) de Vendas</option>
-        </optgroup>
-        <optgroup label="Marketing & Comunicação">
-          <option>Analista de Marketing</option>
-          <option>Assistente de Marketing</option>
-          <option>Gerente de Marketing</option>
-          <option>Social Media</option>
-          <option>Designer Gráfico</option>
-          <option>Redator(a) / Copywriter</option>
-          <option>Analista de SEO</option>
-          <option>Gestor(a) de Tráfego Pago</option>
-          <option>Produtor(a) de Conteúdo</option>
-          <option>Fotógrafo(a)</option>
-          <option>Videomaker</option>
-        </optgroup>
-        <optgroup label="Operações & Logística">
-          <option>Operador(a) de Logística</option>
-          <option>Auxiliar de Logística</option>
-          <option>Analista de Logística</option>
-          <option>Gerente de Operações</option>
-          <option>Supervisor(a) de Operações</option>
-          <option>Almoxarife</option>
-          <option>Motorista</option>
-          <option>Entregador(a)</option>
-          <option>Operador(a) de Empilhadeira</option>
-        </optgroup>
-        <optgroup label="Produção & Indústria">
-          <option>Auxiliar de Produção</option>
-          <option>Operador(a) de Produção</option>
-          <option>Supervisor(a) de Produção</option>
-          <option>Gerente de Produção</option>
-          <option>Técnico(a) de Manutenção</option>
-          <option>Mecânico(a) Industrial</option>
-          <option>Eletricista Industrial</option>
-          <option>Técnico(a) de Qualidade</option>
-          <option>Analista de Qualidade</option>
-          <option>Engenheiro(a) de Produção</option>
-          <option>Engenheiro(a) de Qualidade</option>
-        </optgroup>
-        <optgroup label="Atendimento">
-          <option>Atendente</option>
-          <option>Operador(a) de Call Center</option>
-          <option>Supervisor(a) de Atendimento</option>
-          <option>Analista de Customer Success</option>
-          <option>Gerente de Customer Success</option>
-        </optgroup>
-        <optgroup label="Jurídico">
-          <option>Advogado(a)</option>
-          <option>Assistente Jurídico</option>
-          <option>Analista Jurídico</option>
-          <option>Gerente Jurídico</option>
-        </optgroup>
-        <optgroup label="Saúde">
-          <option>Médico(a)</option>
-          <option>Enfermeiro(a)</option>
-          <option>Técnico(a) de Enfermagem</option>
-          <option>Fisioterapeuta</option>
-          <option>Nutricionista</option>
-          <option>Psicólogo(a)</option>
-          <option>Farmacêutico(a)</option>
-          <option>Assistente Social</option>
-        </optgroup>
-        <optgroup label="Educação">
-          <option>Professor(a)</option>
-          <option>Coordenador(a) Pedagógico</option>
-          <option>Instrutor(a) de Treinamento</option>
-          <option>Tutor(a) EAD</option>
-        </optgroup>
-        <optgroup label="Engenharia & Projetos">
-          <option>Engenheiro(a) Civil</option>
-          <option>Engenheiro(a) Elétrico</option>
-          <option>Engenheiro(a) Mecânico</option>
-          <option>Engenheiro(a) Químico</option>
-          <option>Analista de Projetos</option>
-          <option>Gerente de Projetos</option>
-          <option>Arquiteto(a)</option>
-          <option>Técnico(a) em Edificações</option>
-        </optgroup>
-        <optgroup label="Compras & Supply Chain">
-          <option>Analista de Compras</option>
-          <option>Assistente de Compras</option>
-          <option>Gerente de Compras</option>
-          <option>Analista de Supply Chain</option>
-        </optgroup>
-        <optgroup label="Outros">
-          <option>Estagiário(a)</option>
-          <option>Jovem Aprendiz</option>
-          <option value="outro">Outro (digitar abaixo)</option>
-        </optgroup>
-      </select>
-      <input type="text" id="cargoOutro" placeholder="Digite o cargo desejado" style="display:none;margin-top:8px"/>
+      <select id="cargo"></select>
+      <button type="button" onclick="abrirModalCargo()" style="margin-top:8px;background:none;border:none;color:#2563eb;font-size:.85rem;font-weight:600;cursor:pointer;padding:0">+ Cadastrar nova vaga (RH)</button>
 
       <button class="btn btn-primary" onclick="avancar1()">Avançar →</button>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN RH PARA CADASTRAR CARGO -->
+  <div class="step" id="modalCargoOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center">
+    <div class="card" style="max-width:380px;margin:auto;position:relative;top:20vh">
+      <h2 style="font-size:1.1rem">🔐 Login RH</h2>
+      <label>Usuário</label>
+      <input type="text" id="rhUser" placeholder="rh@empresa.com"/>
+      <label>Senha</label>
+      <input type="password" id="rhPass" placeholder="••••••••"/>
+      <div class="error" id="erroRhLogin" style="display:none">Usuário ou senha incorretos.</div>
+      <div id="cadastroCargoArea" style="display:none;margin-top:1rem">
+        <label>Nova vaga</label>
+        <input type="text" id="novoCargoNome" placeholder="Ex.: Analista de Sucesso do Cliente"/>
+        <div class="success-msg" id="cargoSalvoMsg" style="display:none">✅ Vaga cadastrada!</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="fecharModalCargo()">Cancelar</button>
+        <button class="btn btn-primary" id="btnRhAction" onclick="loginRhCargo()">Entrar</button>
+      </div>
     </div>
   </div>
 
@@ -489,6 +361,64 @@
 // ── Supabase ──────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://qbtroafavgbvrznggppr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFidHJvYWZhdmdidnJ6bmdncHByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NDUwMTcsImV4cCI6MjA5NzAyMTAxN30.POJQXzgEzlItAyyZY0UskSuPjPdVBQUPck4iHw6h6SA';
+const RH_USER = 'rh@empresa.com';
+const RH_PASS = 'rh2024';
+let rhLogado = false;
+
+async function carregarCargos() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/cargos?select=nome&order=nome.asc`, {
+    headers: { 'Authorization': `Bearer ${SUPABASE_KEY}`, 'apikey': SUPABASE_KEY }
+  });
+  const data = await res.json();
+  const sel = document.getElementById('cargo');
+  sel.innerHTML = data.map(c => `<option>${c.nome}</option>`).join('');
+}
+carregarCargos();
+
+function abrirModalCargo() {
+  rhLogado = false;
+  document.getElementById('rhUser').value = '';
+  document.getElementById('rhPass').value = '';
+  document.getElementById('cadastroCargoArea').style.display = 'none';
+  document.getElementById('erroRhLogin').style.display = 'none';
+  document.getElementById('btnRhAction').textContent = 'Entrar';
+  document.getElementById('btnRhAction').onclick = loginRhCargo;
+  document.getElementById('modalCargoOverlay').style.display = 'flex';
+}
+function fecharModalCargo() {
+  document.getElementById('modalCargoOverlay').style.display = 'none';
+}
+function loginRhCargo() {
+  const u = document.getElementById('rhUser').value.trim();
+  const p = document.getElementById('rhPass').value.trim();
+  if (u === RH_USER && p === RH_PASS) {
+    rhLogado = true;
+    document.getElementById('cadastroCargoArea').style.display = 'block';
+    document.getElementById('erroRhLogin').style.display = 'none';
+    document.getElementById('btnRhAction').textContent = 'Salvar vaga';
+    document.getElementById('btnRhAction').onclick = salvarNovoCargo;
+  } else {
+    document.getElementById('erroRhLogin').style.display = 'block';
+  }
+}
+async function salvarNovoCargo() {
+  const nome = document.getElementById('novoCargoNome').value.trim();
+  if (!nome) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/cargos`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_KEY}`, 'apikey': SUPABASE_KEY,
+        'Content-Type': 'application/json', 'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ nome })
+    });
+    document.getElementById('cargoSalvoMsg').style.display = 'block';
+    document.getElementById('novoCargoNome').value = '';
+    await carregarCargos();
+    setTimeout(fecharModalCargo, 1200);
+  } catch(e) { alert('Erro ao salvar vaga: ' + e.message); }
+}
 
 async function sbUpload(bucket, path, file, contentType) {
   const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
@@ -561,31 +491,17 @@ function mascaraWA(el) {
   el.value = result;
 }
 
-// ── Cargo outro ───────────────────────────────────────────────────────────
-function toggleOutro() {
-  const sel = document.getElementById('cargo');
-  const inp = document.getElementById('cargoOutro');
-  inp.style.display = sel.value === 'outro' ? 'block' : 'none';
-}
-
 // ── Etapa 1 ───────────────────────────────────────────────────────────────
 function avancar1() {
-  let ok = true;
   const nome  = document.getElementById('nome').value.trim();
   const email = document.getElementById('email').value.trim();
   const wa    = document.getElementById('whatsapp').value.trim();
-  const cargo = document.getElementById('cargo').value;
-  const outro = document.getElementById('cargoOutro').value.trim();
 
   mostrarErro('erroNome',  !nome);
   mostrarErro('erroEmail', !validarEmail(email));
   mostrarErro('erroWA',    wa.replace(/\D/g,'').length < 6);
 
   if (!nome || !validarEmail(email) || wa.replace(/\D/g,'').length < 6) return;
-  if (cargo === 'outro' && !outro) {
-    document.getElementById('cargoOutro').style.border = '1.5px solid #dc2626';
-    return;
-  }
   mostrarEtapa(2);
 }
 
@@ -686,9 +602,7 @@ function avancar3() {
   const email = document.getElementById('email').value.trim();
   const ddi   = document.getElementById('pais').value;
   const wa    = ddi + ' ' + document.getElementById('whatsapp').value.trim();
-  const cargo = document.getElementById('cargo').value === 'outro'
-    ? document.getElementById('cargoOutro').value.trim()
-    : document.getElementById('cargo').value;
+  const cargo = document.getElementById('cargo').value;
 
   document.getElementById('resumo').innerHTML = `
     <div class="review-item"><span>👤 Nome</span>${nome}</div>
@@ -713,9 +627,7 @@ async function enviarCandidatura() {
     const email = document.getElementById('email').value.trim();
     const ddi   = document.getElementById('pais').value;
     const wa    = ddi + ' ' + document.getElementById('whatsapp').value.trim();
-    const cargo = document.getElementById('cargo').value === 'outro'
-      ? document.getElementById('cargoOutro').value.trim()
-      : document.getElementById('cargo').value;
+    const cargo = document.getElementById('cargo').value;
 
     const ext = curriculoFile.name.split('.').pop();
 
