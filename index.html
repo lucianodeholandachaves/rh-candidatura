@@ -426,6 +426,11 @@ document.addEventListener('click', (e) => {
   }
 });
 
+function toggleSenhaRH() {
+  const input = document.getElementById('rhPass');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
 function abrirModalCargo() {
   rhLogado = false;
   document.getElementById('rhUser').value = '';
