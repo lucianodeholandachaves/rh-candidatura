@@ -11,35 +11,22 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; colo
 /* LOGIN */
 #loginScreen {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: #020817;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   position: relative; overflow: hidden;
-}
-canvas#stars {
-  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
-}
-.orb {
-  position: absolute; border-radius: 50%; filter: blur(80px); z-index: 1; animation: orbFloat 8s ease-in-out infinite alternate;
-}
-.orb1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(14,165,233,.35), transparent 70%); top: -100px; left: -100px; animation-delay: 0s; }
-.orb2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(99,102,241,.3), transparent 70%); bottom: -80px; right: -80px; animation-delay: -3s; }
-.orb3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(6,182,212,.2), transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -5s; }
-@keyframes orbFloat {
-  from { transform: translate(0,0) scale(1); }
-  to   { transform: translate(30px,20px) scale(1.1); }
 }
 .login-card {
   position: relative; z-index: 10;
-  background: rgba(255,255,255,.04);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 28px; padding: 3.5rem 3rem;
-  box-shadow: 0 40px 100px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15), 0 0 0 1px rgba(14,165,233,.1);
-  width: 100%; max-width: 400px; text-align: center;
-  animation: cardIn .8s cubic-bezier(.22,1,.36,1);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 24px; padding: 3rem 2.5rem;
+  box-shadow: 0 24px 60px rgba(0,0,0,.4);
+  width: 100%; max-width: 380px; text-align: center;
+  animation: cardIn .6s cubic-bezier(.22,1,.36,1);
 }
 @keyframes cardIn {
-  from { opacity: 0; transform: translateY(40px) scale(.95); }
+  from { opacity: 0; transform: translateY(30px) scale(.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 .login-logo {
@@ -74,13 +61,13 @@ canvas#stars {
 
 .btn-login {
   width: 100%; padding: 13px;
-  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  background: linear-gradient(135deg, #6b3a3a, #8B3A3A);
   color: white; border: none; border-radius: 12px;
   font-size: 15px; font-weight: 700; cursor: pointer;
-  box-shadow: 0 8px 24px rgba(14,165,233,.4);
+  box-shadow: 0 8px 24px rgba(139,58,58,.4);
   transition: transform .2s, box-shadow .2s;
 }
-.btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(14,165,233,.5); }
+.btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(139,58,58,.5); }
 #loginErro { color: #f87171; font-size: .85rem; margin-bottom: .8rem; display: none; }
 
 /* HEADER */
@@ -181,10 +168,6 @@ main { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <canvas id="stars"></canvas>
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
   <div class="login-card">
     <img src="logo.png" alt="Jannine Calixto" style="max-width:160px;width:55%;height:auto;margin:0 auto 1rem;display:block;filter:drop-shadow(0 0 20px rgba(255,255,255,.6)) drop-shadow(0 0 8px rgba(255,255,255,.4)) drop-shadow(0 4px 12px rgba(0,0,0,.4))"/>
     <h1>Portal Empresa</h1>
@@ -478,33 +461,7 @@ async function exportarPDF(id) {
 // Foco automático no primeiro campo do PIN
 window.onload = () => document.getElementById('p1').focus();
 </script>
-<script>
-// Estrelas animadas
-const canvas = document.getElementById('stars');
-const ctx = canvas.getContext('2d');
-let stars = [];
-function resizeCanvas() { canvas.width = innerWidth; canvas.height = innerHeight; }
-function createStars() {
-  stars = [];
-  for (let i = 0; i < 150; i++) {
-    stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5+.3, a: Math.random(), da: (Math.random()-.5)*.01 });
-  }
-}
-function drawStars() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  stars.forEach(s => {
-    s.a += s.da;
-    if (s.a <= 0 || s.a >= 1) s.da *= -1;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,255,255,${s.a})`;
-    ctx.fill();
-  });
-  requestAnimationFrame(drawStars);
-}
-resizeCanvas(); createStars(); drawStars();
-window.addEventListener('resize', () => { resizeCanvas(); createStars(); });
-</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
