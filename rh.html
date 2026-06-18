@@ -467,7 +467,7 @@ function renderCandidatos(lista) {
       </div>
       <div class="cand-acoes">
         <button class="btn btn-outline btn-sm" onclick="verVideo('${c.video_url}','${c.nome}')">▶ Ver Vídeo</button>
-        <button class="btn btn-gray btn-sm" onclick="window.open('${c.curriculo_url}','_blank')">📄 Currículo</button>
+        <button class="btn btn-gray btn-sm" onclick='abrirCurriculos(${JSON.stringify(c.curriculo_url.split(" | "))})'>📄 Currículo${c.curriculo_url.includes(" | ") ? "s (" + c.curriculo_url.split(" | ").length + ")" : ""}</button>
         <button class="btn btn-sm" style="background:#7c3aed;color:white" onclick="exportarPDF('${c.id}')">📥 Exportar PDF</button>
       </div>
       <div class="parecer-area">
@@ -607,6 +607,10 @@ async function salvarLiberados() {
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────
+function abrirCurriculos(urls) {
+  urls.forEach(url => window.open(url, '_blank'));
+}
+
 function fecharModal(id) {
   document.getElementById(id).classList.remove('open');
   if (id === 'videoModal') document.getElementById('videoPlayer').src = '';
