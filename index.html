@@ -325,7 +325,7 @@
       <label class="upload-area" for="curriculoInput">
         <input type="file" id="curriculoInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="curriculoSelecionado()" multiple/>
         <div class="icon">📎</div>
-        <p><strong>Clique para selecionar</strong> ou arraste aqui</p>
+        <p><strong>Clique para selecionar</strong> (pode clicar várias vezes para anexar mais)</p>
         <p style="margin-top:.3rem">PDF, DOC, DOCX, ou até 5 fotos JPG/PNG (máx. 5MB no total)</p>
       </label>
       <div id="curriculoNome" class="success-msg" style="display:none"></div>
@@ -679,30 +679,47 @@ function avancar2() {
 
 // ── Currículo ─────────────────────────────────────────────────────────────
 function curriculoSelecionado() {
-  const files = [...document.getElementById('curriculoInput').files];
+  const novosArquivos = [...document.getElementById('curriculoInput').files];
   const limiteMB = 5;
   const maxArquivos = 5;
 
-  if (!files.length) return;
+  if (!novosArquivos.length) return;
 
-  if (files.length > maxArquivos) {
-    alert(`Selecione no máximo ${maxArquivos} arquivos.`);
+  const todosArquivos = [...curriculoFiles, ...novosArquivos];
+
+  if (todosArquivos.length > maxArquivos) {
+    alert(`Você já selecionou ${curriculoFiles.length} arquivo(s). Limite máximo: ${maxArquivos}.`);
     document.getElementById('curriculoInput').value = '';
     return;
   }
 
-  const tamanhoTotal = files.reduce((soma, f) => soma + f.size, 0);
+  const tamanhoTotal = todosArquivos.reduce((soma, f) => soma + f.size, 0);
   if (tamanhoTotal > limiteMB * 1024 * 1024) {
     alert(`Os arquivos somam ${(tamanhoTotal/1024/1024).toFixed(1)}MB. O limite total é ${limiteMB}MB.`);
     document.getElementById('curriculoInput').value = '';
     return;
   }
 
-  curriculoFiles = files;
+  curriculoFiles = todosArquivos;
+  renderListaCurriculos();
+  document.getElementById('curriculoInput').value = '';
+}
+
+function renderListaCurriculos() {
   const el = document.getElementById('curriculoNome');
-  el.innerHTML = files.map(f => `✅ ${f.name} (${(f.size/1024).toFixed(0)} KB)`).join('<br>');
+  if (!curriculoFiles.length) { el.style.display = 'none'; return; }
+  el.innerHTML = curriculoFiles.map((f, i) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0">
+      <span>✅ ${f.name} (${(f.size/1024).toFixed(0)} KB)</span>
+      <button type="button" onclick="removerCurriculo(${i})" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;padding:2px 8px;font-size:.75rem;cursor:pointer">✕</button>
+    </div>`).join('');
   el.style.display = 'block';
   document.getElementById('erroCurriculo').style.display = 'none';
+}
+
+function removerCurriculo(index) {
+  curriculoFiles.splice(index, 1);
+  renderListaCurriculos();
 }
 
 function avancar3() {
