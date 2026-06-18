@@ -11,55 +11,23 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; colo
 /* LOGIN */
 #loginScreen {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   position: relative; overflow: hidden;
-}
-#loginScreen::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(120,80,255,.25) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(0,200,255,.2) 0%, transparent 50%),
-    radial-gradient(ellipse at 60% 80%, rgba(255,60,180,.15) 0%, transparent 50%);
-  animation: pulseGlow 6s ease-in-out infinite alternate;
-}
-@keyframes pulseGlow {
-  from { opacity: .7; transform: scale(1); }
-  to   { opacity: 1;  transform: scale(1.05); }
-}
-#loginScreen::after {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.08) 1px, transparent 1px);
-  background-size: 40px 40px;
-  animation: gridMove 20s linear infinite;
-}
-@keyframes gridMove {
-  from { background-position: 0 0; }
-  to   { background-position: 40px 40px; }
 }
 .login-card {
   position: relative; z-index: 10;
-  background: rgba(255,255,255,.07);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.12);
   border-radius: 24px; padding: 3rem 2.5rem;
-  box-shadow: 0 32px 80px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
+  box-shadow: 0 24px 60px rgba(0,0,0,.4);
   width: 100%; max-width: 400px; text-align: center;
   animation: cardIn .6s cubic-bezier(.22,1,.36,1);
 }
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(30px) scale(.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.login-card .logo {
-  width: 64px; height: 64px; border-radius: 18px; margin: 0 auto 1.2rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem;
-  box-shadow: 0 8px 32px rgba(99,102,241,.5);
 }
 .login-card h1 {
   color: white; font-size: 1.7rem; font-weight: 700;
@@ -75,23 +43,23 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; colo
 }
 .login-card .form-group input::placeholder { color: rgba(255,255,255,.3); }
 .login-card .form-group input:focus {
-  border-color: #6366f1;
-  background: rgba(99,102,241,.15);
-  box-shadow: 0 0 0 3px rgba(99,102,241,.2);
+  border-color: #8B3A3A;
+  background: rgba(139,58,58,.15);
+  box-shadow: 0 0 0 3px rgba(139,58,58,.2);
   outline: none;
 }
 .login-card .btn-login {
   width: 100%; padding: 13px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #6b3a3a, #8B3A3A);
   color: white; border: none; border-radius: 12px;
   font-size: 15px; font-weight: 700; cursor: pointer;
-  box-shadow: 0 8px 24px rgba(99,102,241,.4);
+  box-shadow: 0 8px 24px rgba(139,58,58,.4);
   transition: transform .2s, box-shadow .2s;
   margin-top: .5rem;
 }
 .login-card .btn-login:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(99,102,241,.5);
+  box-shadow: 0 12px 32px rgba(139,58,58,.5);
 }
 
 /* HEADER */
@@ -230,7 +198,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="logo">🎯</div>
+    <img src="logo.png" alt="Jannine Calixto" style="max-width:160px;width:55%;height:auto;margin:0 auto 1.2rem;display:block;filter:drop-shadow(0 0 20px rgba(255,255,255,.6)) drop-shadow(0 0 8px rgba(255,255,255,.4)) drop-shadow(0 4px 12px rgba(0,0,0,.4))"/>
     <h1>Painel RH</h1>
     <p>Acesso restrito à equipe de RH</p>
     <div class="form-group" style="text-align:left">
