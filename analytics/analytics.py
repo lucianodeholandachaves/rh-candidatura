@@ -2642,17 +2642,33 @@ elif pg=="fluxo":
     with t2:
         nomes_sai={"Centro de Custos Saidas 1":"Folha","Centro de Custos Saidas 2":"Fornecedores",
                   "Centro de Custos Saidas 3":"Impostos/Operacionais","Centro de Custos Saidas 4":"Investimentos"}
+        totais_sai={}
         if cc_sai:
             fig_sai=go.Figure()
             for i,c in enumerate(cc_sai):
-                fig_sai.add_trace(go.Bar(x=x,
-                  y=pd.to_numeric(df_f[c],errors="coerce").fillna(0),
-                  name=nomes_sai.get(c,c),
+                vals_sai=pd.to_numeric(df_f[c],errors="coerce").fillna(0)
+                nome_sai=nomes_sai.get(c,c)
+                fig_sai.add_trace(go.Bar(x=x,y=vals_sai,name=nome_sai,
                   marker_color=CORES_LIGHT[i%len(CORES_LIGHT)],opacity=.85))
+                totais_sai[nome_sai]=float(vals_sai.sum())
             fig_sai.update_layout(title=dict(text="📦 Saídas por Centro de Custo",
               font=dict(size=12,color="#111827")),
               barmode="stack",**TH_FC)
             st.plotly_chart(fig_sai,use_container_width=True)
+            # Pizza com todas as categorias de saída
+            if totais_sai:
+                fig_pie_sai=go.Figure(go.Pie(
+                  labels=list(totais_sai.keys()),
+                  values=list(totais_sai.values()),
+                  marker=dict(colors=CORES_LIGHT[:len(totais_sai)]),
+                  hole=.45,textfont=dict(size=10,color="#111827")))
+                fig_pie_sai.update_layout(
+                  title=dict(text="Distribuição das Saídas",font=dict(size=12,color="#111827")),
+                  plot_bgcolor="white",paper_bgcolor="white",
+                  font=dict(color="#6B7280",size=10),
+                  margin=dict(l=8,r=8,t=40,b=8),height=280,
+                  legend=dict(bgcolor="rgba(0,0,0,0)",font=dict(size=9)))
+                st.plotly_chart(fig_pie_sai,use_container_width=True)
         else:
             st.markdown('<div class="al-i">Dados de centro de custo não disponíveis.</div>',unsafe_allow_html=True)
 
