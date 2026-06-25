@@ -2384,7 +2384,8 @@ elif pg=="dre":
               hovertemplate=f"<b>{nm}</b><br>%{{x}}<br>%{{y:.1f}}%<extra></extra>"))
         fig_mg.update_layout(title=dict(text="📊 Margens (%)",font=dict(size=12,color="#111827")),**TH_LIGHT)
         st.plotly_chart(fig_mg,use_container_width=True)
-    df_12=df_v.tail(12); n=len(df_12)
+    df_12=df_v
+    n=len(df_12)
     meses_cols=list(df_12[cm].astype(str)) if cm else [str(i) for i in range(n)]
     def dv(c,i):
         try: return float(df_12.iloc[i].get(c,0))
