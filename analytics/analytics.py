@@ -1901,6 +1901,21 @@ elif pg=="clientes":
                             st.markdown(f'<div class="al-s">✅ PIN configurado para {cli_sel}</div>',unsafe_allow_html=True)
                         else:
                             st.markdown(f'<div class="al-s">✅ PIN removido de {cli_sel}</div>',unsafe_allow_html=True)
+            st.divider()
+            st.markdown("**💾 Backup Completo de Todos os Clientes**")
+            st.markdown('<div class="al-i">Gera um arquivo ZIP com todos os JSONs e CSVs de todos os clientes cadastrados — útil para versionar no Git ou guardar uma cópia de segurança fora da nuvem.</div>',unsafe_allow_html=True)
+            if st.button("📦 Gerar Backup (ZIP)",use_container_width=True):
+                import zipfile
+                buf_zip=BytesIO()
+                with zipfile.ZipFile(buf_zip,"w",zipfile.ZIP_DEFLATED) as zf:
+                    for arquivo in os.listdir(PASTA):
+                        caminho=os.path.join(PASTA,arquivo)
+                        if os.path.isfile(caminho):
+                            zf.write(caminho,arcname=arquivo)
+                buf_zip.seek(0)
+                st.download_button("⬇️ Baixar backup_clientes.zip",buf_zip.getvalue(),
+                  file_name=f"backup_clientes_{datetime.now().strftime('%Y-%m-%d')}.zip",
+                  mime="application/zip",use_container_width=True)
         elif senha:
             st.markdown('<div class="al-d">❌ Senha incorreta</div>',unsafe_allow_html=True)
 
