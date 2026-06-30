@@ -1622,7 +1622,7 @@ def treinar(serie,modelo,n=6):
         s=pd.to_numeric(serie,errors="coerce").dropna()
         if len(s)<6: return None
         if modelo=="ARIMA" and STATS_OK:
-            return ARIMA(s,order=(3,1,1)).fit().forecast(n)
+            return ARIMA(s,order=(1,1,1)).fit().forecast(n)
         if modelo=="SARIMAX" and STATS_OK and len(s)>=24:
             return SARIMAX(s,order=(1,1,1),seasonal_order=(1,1,1,12)).fit(disp=False).forecast(n)
         if modelo=="ExponentialSmoothing" and STATS_OK:
