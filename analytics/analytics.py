@@ -404,8 +404,14 @@ def parser_balancete_texto(texto):
         nome_l=item["Nome"].lower()
         if any(t==nome_l.strip() for t in totais_evitar_balancete): continue
         campo_dest=None
+        primeiro_digito_chk=item["Código"].replace(".","")[0] if item["Código"] else ""
         for k,v in mapa_balancete.items():
-            if k in nome_l: campo_dest=v; break
+            if k in nome_l:
+                if primeiro_digito_chk in ("3","4") and v not in ("receita bruta de vendas","faturamento","despesas administrativas","despesas comerciais","despesas financeiras líquidas","despesas com depreciações e amortizações","CMV (custo da mercadoria vendida)"):
+                    continue
+                if primeiro_digito_chk in ("1","2") and v in ("receita bruta de vendas","despesas administrativas","despesas comerciais","despesas financeiras líquidas","despesas com depreciações e amortizações","CMV (custo da mercadoria vendida)"):
+                    continue
+                campo_dest=v; break
         if not campo_dest: continue
         primeiro_digito=item["Código"].replace(".","")[0] if item["Código"] else ""
         if primeiro_digito=="3":
