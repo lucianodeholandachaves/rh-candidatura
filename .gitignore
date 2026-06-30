@@ -1,4 +1,1 @@
-analytics/clientes_bi/ 
-analytics/config.json 
-__pycache__/ 
-*.pyc 
+config.json 

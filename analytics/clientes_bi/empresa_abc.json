@@ -1,0 +1,10 @@
+{
+  "nome": "Empresa ABC",
+  "meta": {
+    "at": "2026-06-13T23:12:44.377146"
+  },
+  "saldo_ini": 100000.0,
+  "pin": "1234",
+  "entradas_vista": 500000.0,
+  "freq_fluxo": "Mensal"
+}
