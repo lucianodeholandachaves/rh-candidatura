@@ -1,0 +1,47 @@
+﻿def _chamar_ia_extracao_bruta(df_cli, api_key, tipo):
+    """Pede à IA APENAS para extrair células brutas (ano, mês, nome da conta original, valor),
+    SEM tentar mapear ou somar nada — isso é feito depois por regras determinísticas."""
+    n_linhas = min(len(df_cli), 1500)
+    amostra=df_cli.head(n_linhas).to_string(max_cols=df_cli.shape[1])
+    prompt=f"""Você é um extrator de dados financeiros. NÃO interprete, NÃO some, NÃO mapeie nada —
+apenas extraia cada linha de dado bruto exatamente como está no arquivo.
+
+TIPO DO DOCUMENTO: {tipo}
+
+ARQUIVO:
+{amostra}
+
+INSTRUÇÕES:
+1. Para cada valor numérico no arquivo, identifique: ANO, MÊS, nome da CONTA (exatamente como
+   escrito no arquivo, sem traduzir ou simplificar) e o VALOR
+2. Ignore linhas de total/subtotal SE houver linhas de detalhe que já somam ao mesmo resultado
+   (evite duplicar). Se não tiver certeza, inclua a linha mesmo assim.
+3. Ignore colunas de %, médias, ou texto sem valor numérico
+4. Mantenha valores negativos como estão (não inverta sinais)
+5. mês deve ser um dos: jan/fev/mar/abr/mai/jun/jul/ago/set/out/nov/dez (ou nome completo)
+6. Extraia TODOS os registros do arquivo, não pare antes do final
+
+Retorne SOMENTE este JSON, sem texto adicional, sem markdown:
+{{"celulas":[{{"ano":"2024","mes":"jan","conta":"Receita de Vendas","valor":552000}}]}}"""
+    try:
+        txt=""
+        if not api_key.startswith("sk-ant-") and OPENAI_OK:
+            client=OpenAI(api_key=api_key)
+            r=client.chat.completions.create(model="gpt-4o",max_tokens=32000,
+              messages=[{"role":"system","content":"Você é um extrator literal de dados. Retorne APENAS JSON válido sem markdown."},
+                        {"role":"user","content":prompt}])
+            txt=r.choices[0].message.content.strip()
+        elif ANTHROPIC_OK:
+            client=anthropic.Anthropic(api_key=api_key)
+            r=client.messages.create(model="claude-sonnet-4-6",max_tokens=32000,
+              system="Você é um extrator literal de dados. Retorne APENAS JSON válido sem markdown.",
+              messages=[{"role":"user","content":prompt}])
+            txt=r.content[0].text.strip()
+        txt=re.sub(r'^```json\s*','',txt); txt=re.sub(r'\s*```$','',txt)
+        return json.loads(txt).get("celulas",[])
+    except Exception as e:
+        import sys
+        print(f"ERRO em _chamar_ia_extracao_bruta: {e}", file=sys.stderr)
+        return []
+
+def _chamar_ia_extracao(df_cli, campos, api_key, tipo):
